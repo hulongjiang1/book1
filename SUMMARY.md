@@ -1,6 +1,7 @@
 # 大杂烩
-* [gibook安装]
-* [安装nodejs](nodejs-an-zhuang.md)
-* [搭建gitbook](README.md)
+* [前言](README.md)
+  * [安装nodejs](nodejs/nodejs_setup.md)
+  * [安装gitbook](gitbook/gitbook_setup.md)
+
 
 
