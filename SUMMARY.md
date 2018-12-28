@@ -6,4 +6,10 @@
     * [安装gitbook插件](gitbook/gitbook_plugin.md)
   * [dns](dns/readme.md)
     * [安装dns(docker)](dns/dns_setup_docker.md)
-
+  * [solr](solr/readme.md)
+    * [安装solr独立模式](solr/solr_setup_core.md)
+	* [solr配置文件](solr/solr_configFile.md)
+  * [zookeeper](zookeeper/readme.md)
+    * [zookeeper安装](zookeeper/zookeeper_setup.md)
+	* [zookeeper_ui安装](zookeeper/zookeeper_ui.md)
+	* [zooInspector安装](zookeeper/zooInspector.md)
