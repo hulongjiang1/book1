@@ -6,7 +6,7 @@ npm install -g gitbook-cli
 
 怎么使用
 
-1. 创建一个自己的目录，执行gitbook init
+# 1. 创建一个自己的目录，执行gitbook init
 ```
 #mkdir mybook
 #cd mybook/
@@ -33,7 +33,7 @@ SUMMARY.md —— 书籍的目录结构在这里配置
 * [第四章](Chapter4/README.md)
 ```
 
-接着我们执行 `gitbook serve` 来预览这本书籍，执行命令后会对 Markdown 格式的文档进行转换，默认转换为 html 格式，最后提示 “Serving book on [http://localhost:4000](http://localhost:4000/)”。
+# 2. 接着我们执行 `gitbook serve` 来预览这本书籍，执行命令后会对 Markdown 格式的文档进行转换，默认转换为 html 格式，最后提示 “Serving book on [http://localhost:4000](http://localhost:4000/)”。
 
 ![20180718185251753](20180718185251753.png)
 
@@ -53,3 +53,8 @@ serve 命令也可以指定端口：
 生成 mobi 格式的电子书：
 ```$ gitbook mobi ./ ./mybook.mobi```
 如果生成不了，你可能还需要安装一些工具，比如 ebook-convert。或者在 Typora 中安装 Pandoc 进行导出。
+
+# 3. 用gitbook build电子书，用nginx发布静态的html
+```docker run -d -p 8000:80 --read-only --name book -v /srv/book:/usr/share/nginx/html -v /var/nginx/run:/var/run nginx```
+
+* nginx的html路径不能跟gitbook的工作路径映射为同一个。否则会有冲突
