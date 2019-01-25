@@ -175,3 +175,6 @@ docker push 10.22.28.108:5000/library/market-logstash:v1
 
 ![1548409550863](1548409550863.png)
 
+过一段时间，程序执行后，可以通过kibana查看elasticsearch的内容
+
+![1548410446780](1548410446780.png)
