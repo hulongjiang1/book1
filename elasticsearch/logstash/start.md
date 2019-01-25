@@ -20,15 +20,15 @@ output {
 bin/logstash -f first-pipeline.conf --config.test_and_exit
 ```
 
-The `--config.test_and_exit` option parses your configuration file and reports any errors.
+The `--config.test_and_exit` 这个选择项可以解析配置文件的错误并产出报告和错误。
 
-If the configuration file passes the configuration test, start Logstash with the following command:
+使用配置文件启动logstash，可使用如下命令:
 
 ```shell
 bin/logstash -f first-pipeline.conf --config.reload.automatic
 ```
 
-The `--config.reload.automatic` option enables automatic config reloading so that you don’t have to stop and restart Logstash every time you modify the configuration file.
+The `--config.reload.automatic` 这个配置可以不需要停止或重启logstash的情况下，当配置文件修改时，自动装载配置文件。
 
 
 

@@ -27,4 +27,5 @@
       * [过滤模块filter](elasticsearch/logstash/filter_module.md)
       * [输出模块output](elasticsearch/logstash/output_module.md)
       * [多管道pipelines](elasticsearch/logstash/pipelines.md)
-      * [例子](elasticsearch/logstash/sample1.md)
+	  * [启动logstash](elasticsearch/logstash/start.md)
+      * [例子](elasticsearch/logstash/sample.md)
