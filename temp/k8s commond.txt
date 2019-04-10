@@ -1,0 +1,107 @@
+k get pods --all-namespaces -o=wide
+NAMESPACE       NAME                                        READY   STATUS      RESTARTS   AGE   IP             NODE           NOMINATED NODE
+cattle-system   cattle-59c59f7c86-dsj64                     1/1     Running     0          2h    10.42.1.4      10.22.28.202   <none>
+cattle-system   rancher-79977f9d95-kjlql                    1/1     Running     0          19h   10.42.2.12     10.22.28.201   <none>
+cattle-system   rancher-79977f9d95-kpq2c                    1/1     Running     0          19h   10.42.1.3      10.22.28.202   <none>
+cattle-system   rancher-79977f9d95-rb2vx                    1/1     Running     0          19h   10.42.0.4      10.22.29.200   <none>
+ingress-nginx   default-http-backend-6df7944b8d-tq9dg       1/1     Running     0          2h    10.42.1.5      10.22.28.202   <none>
+ingress-nginx   nginx-ingress-controller-fkpb7              1/1     Running     0          21h   10.22.28.202   10.22.28.202   <none>
+ingress-nginx   nginx-ingress-controller-t7mmh              1/1     Running     0          21h   10.22.28.201   10.22.28.201   <none>
+ingress-nginx   nginx-ingress-controller-wfmcz              1/1     Running     0          21h   10.22.29.200   10.22.29.200   <none>
+kube-system     canal-8r5hl                                 3/3     Running     0          21h   10.22.29.200   10.22.29.200   <none>
+kube-system     canal-h85bz                                 3/3     Running     0          21h   10.22.28.201   10.22.28.201   <none>
+kube-system     canal-hjghb                                 3/3     Running     0          21h   10.22.28.202   10.22.28.202   <none>
+kube-system     cert-manager-cert-manager-8f55cc84b-dnjz5   2/2     Running     0          19h   10.42.0.3      10.22.29.200   <none>
+kube-system     kube-dns-7588d5b5f5-bw65j                   3/3     Running     0          21h   10.42.2.8      10.22.28.201   <none>
+kube-system     kube-dns-autoscaler-5db9bbb766-hc26z        1/1     Running     0          21h   10.42.2.9      10.22.28.201   <none>
+kube-system     metrics-server-97bc649d5-r9wrb              1/1     Running     0          21h   10.42.2.7      10.22.28.201   <none>
+kube-system     rke-ingress-controller-deploy-job-qpsmz     0/1     Completed   0          21h   10.22.28.201   10.22.28.201   <none>
+kube-system     rke-kubedns-addon-deploy-job-hmf2l          0/1     Completed   0          21h   10.22.28.201   10.22.28.201   <none>
+kube-system     rke-metrics-addon-deploy-job-jh6vr          0/1     Completed   0          21h   10.22.28.201   10.22.28.201   <none>
+kube-system     rke-network-plugin-deploy-job-kn2n6         0/1     Completed   0          21h   10.22.28.201   10.22.28.201   <none>
+kube-system     rke-user-addon-deploy-job-lfpnc             0/1     Completed   0          21h   10.22.28.201   10.22.28.201   <none>
+kube-system     tiller-deploy-767679f54f-gs66v              1/1     Running     0          20h   10.42.0.2      10.22.29.200   <none>
+
+
+[root@localhost rancher]# k get deployments --all-namespaces
+NAMESPACE       NAME                        DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+cattle-system   cattle                      1         1         1            1           19h
+cattle-system   rancher                     3         3         3            3           17h
+ingress-nginx   default-http-backend        1         1         1            1           19h
+kube-system     cert-manager-cert-manager   1         1         1            1           17h
+kube-system     kube-dns                    1         1         1            1           19h
+kube-system     kube-dns-autoscaler         1         1         1            1           19h
+kube-system     metrics-server              1         1         1            1           19h
+kube-system     tiller-deploy               1         1         1            1           18h
+
+
+k -n cattle-system patch  deployments cattle --patch '{"spec": {  "template": { "spec": {"hostAliases": [ {"hostnames": [  "node.rancher.com"], "ip": "10.22.28.201"   },{ "hostnames":["node.rancher.com"],"ip": "10.22.28.202"},{"hostnames":[ "node.rancher.com"],"ip": "10.22.29.200" }] }}}}'
+##############################################################################################################
+
+k -n kube-system patch  daemonsets  canal --patch '{"spec": {  "template": { "spec": {"hostAliases": [ {"hostnames": [  "node.rancher.com"], "ip": "10.22.28.201"   },{ "hostnames":["node.rancher.com"],"ip": "10.22.28.202"},{"hostnames":[ "node.rancher.com"],"ip": "10.22.29.200" }] }}}}'
+
+##############################################################################################################  
+k -n cattle-system create secret generic tls-ca --from-file=cacerts.pem
+
+k get pods --all-namespaces -o=wide
+k get deployment --all-namespaces -o=wide
+k get daemonsets --all-namespaces -o=wide
+k get secret --all-namespaces -o=wide
+k --kubeconfig kube_config_rancher-cluster.yml logs -l app=ingress-nginx -n ingress-nginx
+k logs  nginx-ingress-controller-cq754  --namespace=ingress-nginx -f
+k logs default-http-backend-6df7944b8d-tq9dg   --namespace=ingress-nginx -f
+k describe pod nginx-ingress-controller-t7mmh  --namespace=ingress-nginx
+k -it exec nginx-ingress-controller-t7mmh --namespace=ingress-nginx bash
+k describe deployments cattle -n cattle-system
+k describe deployments default-http-backend -n ingress-nginx
+k describe deployments rancher -n cattle-system
+k describe deployments tiller-deploy -n kube-system
+k describe metrics-server tiller-deploy -n kube-system
+k exec -it --namespace=ingress-nginx nginx-ingress-controller-csq9j bash
+
+
+
+
+这个命令会生成一个2048位的密钥
+openssl genrsa -out privkey.pem 2048 
+生成一个证书请求 
+openssl req -new -key privkey.pem -out cert.csr 
+生成证书
+openssl req -new -x509 -key ca.key -out cacert.pem -days 1095 
+openssl x509 -req -days 365 -in demo.rancher.com.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out demo.rancher.com.crt
+
+k delete  secret tls tls-rancher-ingress  -n cattle-system
+k delete  secret tls generic  tls-ca -n cattle-system
+kubectl -n cattle-system create secret tls tls-rancher-ingress \
+  --cert=./tls.crt \
+  --key=./tls.key
+k -n cattle-system create secret tls tls-rancher-ingress --cert=./cert.csr --key=./privkey.pem
+k -n cattle-system create secret generic tls-ca --from-file=cacert.pem
+k -n cattle-system create secret tls cattle-keys-ingress --cert=./cert.csr --key=./privkey.pem
+
+
+helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+helm repo udpate rancher-latest https://releases.rancher.com/server-charts/latest
+
+helm delete rancher --purge
+
+helm install rancher-stable/rancher \
+  --name rancher \
+  --namespace cattle-system \
+  --set hostname=rancher.wuhanenn.cn \
+  --set ingress.tls.source=secret
+  --set privateCA=true
+
+  
+  helm install rancher-stable/rancher \
+  --name rancher \
+  --namespace cattle-system \
+  --set hostname=node.rancher.com
+
+  
+iptables -F
+ifconfig docker0 down
+brctl delbr docker0
+ifconfig virbr0 down
+brctl delbr virbr0
+systemctl disable libvirtd.service
